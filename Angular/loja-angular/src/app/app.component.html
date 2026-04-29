@@ -1,0 +1,61 @@
+<header class="header">
+  <h1 class="logo">MEGA<span>STORE</span></h1>
+  <div class="search-container">
+    <input 
+      type="text" 
+      [placeholder]="categoriaSelecionada === 'todos' ? 'Pesquisar em toda a loja...' : 'Pesquisar em ' + categoriaSelecionada + '...'"
+      (input)="onSearch($event)"
+    >
+  </div>
+  <nav class="menu-horizontal">
+    <button (click)="filtrar('todos')" [class.active]="categoriaSelecionada === 'todos'">Tudo</button>
+    @for (cat of categorias; track cat) {
+      <button (click)="filtrar(cat)" [class.active]="categoriaSelecionada === cat">{{ cat }}</button>
+    }
+  </nav>
+</header>
+
+<main class="container">
+  @if (produtosExibidos.length > 0) {
+    <div class="grid-produtos">
+      @for (prod of produtosExibidos; track prod.id) {
+        <div class="card" (click)="abrirDetalhes(prod)">
+          <div class="badge">{{ prod.category }}</div>
+          <img [src]="prod.thumbnail" alt="{{ prod.title }}">
+          <div class="info">
+            <h3>{{ prod.title }}</h3>
+            <p class="preco">${{ prod.price }}</p>
+            <button class="btn-comprar">Ver Detalhes</button>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="loader"><p>Nenhum produto encontrado.</p></div>
+  }
+</main>
+
+@if (produtoSelecionado) {
+  <div class="modal-overlay" (click)="fecharDetalhes()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="btn-fechar" (click)="fecharDetalhes()">&times;</button>
+      <div class="modal-body">
+        <div class="modal-img">
+          <img [src]="produtoSelecionado.images[0]" alt="{{ produtoSelecionado.title }}">
+        </div>
+        <div class="modal-info">
+          <span class="modal-category">{{ produtoSelecionado.category }}</span>
+          <h2>{{ produtoSelecionado.title }}</h2>
+          <p class="modal-desc">{{ produtoSelecionado.description }}</p>
+          <div class="modal-meta">
+            <p><strong>Marca:</strong> {{ produtoSelecionado.brand }}</p>
+            <p><strong>Estoque:</strong> {{ produtoSelecionado.stock }} unidades</p>
+            <p><strong>Avaliação:</strong> ⭐ {{ produtoSelecionado.rating }}</p>
+          </div>
+          <p class="modal-price">${{ produtoSelecionado.price }}</p>
+          <button class="btn-adicionar">Adicionar ao Carrinho</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
